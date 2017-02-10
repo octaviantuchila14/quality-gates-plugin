@@ -69,6 +69,8 @@ public class JobConfigurationService {
         }
 
         projectKey = Util.replaceMacro(projectKey, build.getBuildVariables());
+        System.out.println("projectKey: " + projectKey);
+        System.out.println("build.getBuildVariables(): " + build.getBuildVariables());
         try {
             EnvVars env = build.getEnvironment(listener);
             projectKey = Util.replaceMacro(projectKey, env);
