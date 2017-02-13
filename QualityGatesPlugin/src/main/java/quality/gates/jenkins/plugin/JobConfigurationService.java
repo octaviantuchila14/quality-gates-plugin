@@ -29,9 +29,9 @@ public class JobConfigurationService {
             String systemVariableName = projectKey;
             String getEnvVariable = systemVariableName.substring(2, systemVariableName.length()-1);
             projectKey = System.getenv(getEnvVariable);
-            if(projectKey == null) {
-                throw new QGException("Environment variable with name '" + getEnvVariable + "' does not exist.");
-            }
+//            if(projectKey == null) {
+//                throw new QGException("Environment variable with name '" + getEnvVariable + "' does not exist.");
+//            }
         }
         else {
             try {
