@@ -10,6 +10,7 @@ import net.sf.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.logging.Logger;
 
 public class JobConfigurationService {
 
@@ -69,8 +70,12 @@ public class JobConfigurationService {
         }
 
         projectKey = Util.replaceMacro(projectKey, build.getBuildVariables());
-        System.out.println("projectKey: " + projectKey);
-        System.out.println("build.getBuildVariables(): " + build.getBuildVariables());
+
+//        Logger logger = Logger.getLogger("my.logger");
+//        logger.info("projectKey: " + projectKey);
+//        logger.info("build.getBuildVariables(): " + build.getBuildVariables());
+
+
         try {
             EnvVars env = build.getEnvironment(listener);
             projectKey = Util.replaceMacro(projectKey, env);
