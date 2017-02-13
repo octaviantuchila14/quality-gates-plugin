@@ -10,6 +10,8 @@ import net.sf.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import org.apache.log4j.Logger;
+
 
 public class JobConfigurationService {
 
@@ -63,6 +65,8 @@ public class JobConfigurationService {
     }
 
     public JobConfigData checkProjectKeyIfVariable(JobConfigData jobConfigData, AbstractBuild build, BuildListener listener) throws QGException {
+        Logger log = Logger.getLogger(LoggingObject.class);
+        log.info("In checkProjectKeyIfVariable");
         String projectKey = jobConfigData.getProjectKey();
         if(projectKey.isEmpty()) {
             throw new QGException("Empty project key.");
@@ -70,7 +74,9 @@ public class JobConfigurationService {
 
         projectKey = Util.replaceMacro(projectKey, build.getBuildVariables());
         try {
+            log.info("In try clause");
             EnvVars env = build.getEnvironment(listener);
+            log.info("env is: " + env);
             projectKey = Util.replaceMacro(projectKey, env);
         } catch (IOException e) {
             throw new QGException(e);

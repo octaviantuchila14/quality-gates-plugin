@@ -2,6 +2,10 @@ package quality.gates.jenkins.plugin;
 
 import hudson.Util;
 import hudson.util.Secret;
+import hudson.model.*;
+import hudson.EnvVars;
+import hudson.slaves.*;
+import org.apache.log4j.Logger;
 
 public class GlobalConfigDataForSonarInstance {
 
@@ -24,7 +28,16 @@ public class GlobalConfigDataForSonarInstance {
 
     public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String username, Secret secretPass) {
         this.name = name;
-        this.sonarUrl = sonarUrl;
+
+        Logger log = Logger.getLogger(LoggingObject.class);
+        log.info("old sonarUrl: " + sonarUrl);
+        EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
+        EnvVars envVars = prop.getEnvVars();
+        String formattedBranch = envVars.get("FORMATED_BRANCH");
+        String newSonarUrl = sonarUrl.replaceAll("#{FORMATED_BRANCH}", formattedBranch);
+        log.info("new sonarUrl: " + newSonarUrl);
+
+        this.sonarUrl = newSonarUrl;
         this.username = username;
         this.secretPass = secretPass;
     }
