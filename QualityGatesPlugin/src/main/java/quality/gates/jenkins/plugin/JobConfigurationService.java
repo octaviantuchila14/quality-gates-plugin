@@ -11,10 +11,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.*;
-
+import java.util.logging.Logger;
 
 public class JobConfigurationService {
 
@@ -77,6 +78,12 @@ public class JobConfigurationService {
         }
 
         projectKey = Util.replaceMacro(projectKey, build.getBuildVariables());
+
+//        Logger logger = Logger.getLogger("my.logger");
+//        logger.info("projectKey: " + projectKey);
+//        logger.info("build.getBuildVariables(): " + build.getBuildVariables());
+
+
         try {
             try {
                 FileHandler fh = new FileHandler("/Users/octavian/.jenkins/myLogsJobConfiguration");
@@ -106,17 +113,24 @@ public class JobConfigurationService {
     }
 
     public String replaceVariable(String str, TreeMap<String, String> tm) {
-        Set<String> keys = tm.keySet();
-        Iterator<String> it = keys.iterator();
-
-        while(it.hasNext()) {
-            String cr_str = it.next();
+        for ( Map.Entry< String, String > entry : tm.entrySet() ) {
+            String cr_str = entry.getKey();
             if(!cr_str.equals("_")) {
                 //System.out.println("cr_str: " + cr_str);
-                str = str.replace(cr_str, tm.get(cr_str));
+                str = str.replace(cr_str, entry.getValue());
                 //System.out.println("Str is: " + str);
             }
         }
+
+//        while(it.hasNext()) {
+//            String cr_str = it.next();
+//            if(!cr_str.equals("_")) {
+//                //System.out.println("cr_str: " + cr_str);
+//                str = str.replace(cr_str, tm.get(cr_str));
+//                //System.out.println("Str is: " + str);
+//            }
+//        }
+
         str = str.replace("#", "").replace("{", "").replace("}", "");
         //System.out.println("Str is: " + str);
 
