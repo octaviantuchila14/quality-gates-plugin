@@ -6,7 +6,12 @@ import quality.gates.jenkins.plugin.JobConfigData;
 import quality.gates.jenkins.plugin.QGException;
 import org.json.JSONException;
 
+//import java.util.logging.FileHandler;
+//import java.util.logging.Logger;
+
 public class QualityGatesProvider {
+
+//    private static final Logger log = Logger.getLogger( QualityGatesProvider.class.getName() );
 
     private QualityGateResponseParser qualityGateResponseParser;
     private SonarHttpRequester sonarHttpRequester;
@@ -25,6 +30,14 @@ public class QualityGatesProvider {
     }
 
     public QualityGatesStatus getAPIResultsForQualityGates(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws JSONException {
+//        try {
+//            FileHandler fh = new FileHandler("/Users/octavian/.jenkins/myLogsQualityGates");
+//            log.addHandler(fh);
+//        } catch(Exception e) {
+//
+//        }
+//        log.info("QualityGatesProvider hello world");
+//        System.out.println("QualityGatesProvider hello world");
         GlobalConfigDataForSonarInstance validatedData = sonarInstanceValidationService.validateData(globalConfigDataForSonarInstance);
         String requesterResult = getRequesterResult(jobConfigData, validatedData);
         return qualityGateResponseParser.getQualityGateResultFromJSON(requesterResult);

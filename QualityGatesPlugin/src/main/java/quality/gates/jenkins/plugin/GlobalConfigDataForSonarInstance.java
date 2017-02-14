@@ -5,9 +5,11 @@ import hudson.util.Secret;
 import hudson.model.*;
 import hudson.EnvVars;
 import hudson.slaves.*;
-import org.apache.log4j.Logger;
+import java.util.logging.*;
 
 public class GlobalConfigDataForSonarInstance {
+//    private static final Logger log = Logger.getLogger( GlobalConfigDataForSonarInstance.class.getName() );
+
 
     public static final String DEFAULT_URL = "http://localhost:9000";
     public static final String DEFAULT_USERNAME = "admin";
@@ -29,15 +31,23 @@ public class GlobalConfigDataForSonarInstance {
     public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String username, Secret secretPass) {
         this.name = name;
 
-        Logger log = Logger.getLogger(LoggingObject.class);
-        log.info("old sonarUrl: " + sonarUrl);
-        EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
-        EnvVars envVars = prop.getEnvVars();
-        String formattedBranch = envVars.get("FORMATED_BRANCH");
-        String newSonarUrl = sonarUrl.replaceAll("#{FORMATED_BRANCH}", formattedBranch);
-        log.info("new sonarUrl: " + newSonarUrl);
+//        try {
+//            FileHandler fh = new FileHandler("/Users/octavian/.jenkins/myLogsGlobalConfig");
+//            log.addHandler(fh);
+//        } catch(Exception e) {
+//
+//        }
 
-        this.sonarUrl = newSonarUrl;
+//        log.info("username: " + username);
+//        log.info("name: " + name);
+//        log.info("old sonarUrl: " + sonarUrl);
+//        EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
+//        EnvVars envVars = prop.getEnvVars();
+//        String formattedBranch = envVars.get("FORMATED_BRANCH");
+//        String newSonarUrl = sonarUrl.replaceAll("#\\{FORMATED_BRANCH\\}", formattedBranch);
+//        log.info("new sonarUrl: " + newSonarUrl);
+
+        this.sonarUrl = sonarUrl;
         this.username = username;
         this.secretPass = secretPass;
     }

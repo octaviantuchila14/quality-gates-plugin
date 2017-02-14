@@ -10,10 +10,15 @@ import net.sf.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import org.apache.log4j.Logger;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.logging.*;
 
 
 public class JobConfigurationService {
+
+    private static final Logger log = Logger.getLogger( JobConfigurationService.class.getName() );
 
     public ListBoxModel getListOfSonarInstanceNames(GlobalConfig globalConfig) {
         ListBoxModel listBoxModel = new ListBoxModel();
@@ -65,7 +70,6 @@ public class JobConfigurationService {
     }
 
     public JobConfigData checkProjectKeyIfVariable(JobConfigData jobConfigData, AbstractBuild build, BuildListener listener) throws QGException {
-        Logger log = Logger.getLogger(LoggingObject.class);
         log.info("In checkProjectKeyIfVariable");
         String projectKey = jobConfigData.getProjectKey();
         if(projectKey.isEmpty()) {
@@ -74,10 +78,21 @@ public class JobConfigurationService {
 
         projectKey = Util.replaceMacro(projectKey, build.getBuildVariables());
         try {
+            try {
+                FileHandler fh = new FileHandler("/Users/octavian/.jenkins/myLogsJobConfiguration");
+                log.addHandler(fh);
+            } catch(Exception e) {
+
+            }
             log.info("In try clause");
             EnvVars env = build.getEnvironment(listener);
             log.info("env is: " + env);
-            projectKey = Util.replaceMacro(projectKey, env);
+            log.info("projectKey is: " + projectKey);
+
+
+            projectKey = replaceVariable(projectKey, env);
+            log.info("projectKey becomes: " + projectKey);
+
         } catch (IOException e) {
             throw new QGException(e);
         } catch (InterruptedException e) {
@@ -88,5 +103,23 @@ public class JobConfigurationService {
         envVariableJobConfigData.setProjectKey(projectKey);
         envVariableJobConfigData.setSonarInstanceName(jobConfigData.getSonarInstanceName());
         return envVariableJobConfigData;
+    }
+
+    public String replaceVariable(String str, TreeMap<String, String> tm) {
+        Set<String> keys = tm.keySet();
+        Iterator<String> it = keys.iterator();
+
+        while(it.hasNext()) {
+            String cr_str = it.next();
+            if(!cr_str.equals("_")) {
+                System.out.println("cr_str: " + cr_str);
+                str = str.replace(cr_str, tm.get(cr_str));
+                System.out.println("Str is: " + str);
+            }
+        }
+        str = str.replace("#", "").replace("{", "").replace("}", "");
+        System.out.println("Str is: " + str);
+
+        return str;
     }
 }

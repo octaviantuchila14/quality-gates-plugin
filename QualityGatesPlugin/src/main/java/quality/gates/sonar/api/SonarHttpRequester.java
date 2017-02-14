@@ -20,8 +20,12 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
 
 public class SonarHttpRequester {
+
+    private static final Logger log = Logger.getLogger( SonarHttpRequester.class.getName() );
 
     private static final String SONAR_API_GATE = "/api/events?resource=%s&format=json&categories=Alert";
 
@@ -31,7 +35,16 @@ public class SonarHttpRequester {
     }
 
     public String getAPIInfo(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
+        try {
+            FileHandler fh = new FileHandler("/Users/octavian/.jenkins/myLogsSonarHttpRequester");
+            log.addHandler(fh);
+        } catch(Exception e) {
+
+        }
+
+        log.info("projectKey.getProjectKey(): " + projectKey.getProjectKey());
         String sonarApiGate = globalConfigDataForSonarInstance.getSonarUrl() + String.format(SONAR_API_GATE, projectKey.getProjectKey());
+        log.info("sonarApiGate: " + sonarApiGate);
 
         context = HttpClientContext.create();
         CloseableHttpClient client = HttpClientBuilder.create().build();
@@ -50,7 +63,7 @@ public class SonarHttpRequester {
     private String executeGetRequest(CloseableHttpClient client, HttpGet request) throws QGException {
         CloseableHttpResponse response = null;
         try {
-            response =  client.execute(request, context);
+            response = client.execute(request, context);
             int statusCode = response.getStatusLine().getStatusCode();
             HttpEntity entity = response.getEntity();
             String returnResponse = EntityUtils.toString(entity);

@@ -15,6 +15,7 @@ import java.io.InterruptedIOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -189,5 +190,33 @@ public class JobConfigurationServiceTest {
         InterruptedIOException exception = mock(InterruptedIOException.class);
         doThrow(exception).when(build).getEnvironment(listener);
         jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
+    }
+
+    @Test
+    public void testReplaceVariable() {
+        TreeMap<String, String> tm = new TreeMap<String, String>();
+        tm.put("FORMATED_BRANCH", "origin/feature/WRAP1");
+        String result = jobConfigurationService.replaceVariable("#{FORMATED_BRANCH}", tm);
+        System.out.println("Result is: " + result);
+        assert(result.equals("origin/feature/WRAP1"));
+    }
+
+    @Test
+    public void testReplaceVariableWithLargerMap() {
+        TreeMap<String, String> tm = new TreeMap<String, String>();
+        tm.put("_", "/usr/bin/java");
+        tm.put("FORMATED_BRANCH", "origin/feature/WRAP1");
+        String result = jobConfigurationService.replaceVariable("#{FORMATED_BRANCH}", tm);
+        System.out.println("Result is: " + result);
+        assert(result.equals("origin/feature/WRAP1"));
+    }
+
+    @Test
+    public void testReplaceLongerVariable() {
+        TreeMap<String, String> tm = new TreeMap<String, String>();
+        tm.put("FORMATED_BRANCH", "com.boa.jobmanager%3Ajob-management%3Aorigin%2Ffeature%2FWRAP-1-test");
+        String result = jobConfigurationService.replaceVariable("#{FORMATED_BRANCH}", tm);
+        System.out.println("Result is: " + result);
+        assert(result.equals("com.boa.jobmanager%3Ajob-management%3Aorigin%2Ffeature%2FWRAP-1-test"));
     }
 }
