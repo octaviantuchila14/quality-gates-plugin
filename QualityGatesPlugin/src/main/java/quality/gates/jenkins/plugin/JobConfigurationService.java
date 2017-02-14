@@ -112,13 +112,13 @@ public class JobConfigurationService {
         while(it.hasNext()) {
             String cr_str = it.next();
             if(!cr_str.equals("_")) {
-                System.out.println("cr_str: " + cr_str);
+                //System.out.println("cr_str: " + cr_str);
                 str = str.replace(cr_str, tm.get(cr_str));
-                System.out.println("Str is: " + str);
+                //System.out.println("Str is: " + str);
             }
         }
         str = str.replace("#", "").replace("{", "").replace("}", "");
-        System.out.println("Str is: " + str);
+        //System.out.println("Str is: " + str);
 
         return str;
     }
